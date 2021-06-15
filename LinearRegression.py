@@ -64,11 +64,8 @@ def main():
     print(y_pred)
 
     print("Predicted values ", np.round(y_pred[:3], 2))
-
     print("Real values      ", y_test[:3])
-
     print("Trained W        ", round(model.w[0], 2))
-
     print("Trained b        ", round(model.b, 2))
 
 
