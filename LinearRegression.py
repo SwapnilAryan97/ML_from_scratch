@@ -68,6 +68,13 @@ def main():
     print("Trained W        ", round(model.w[0], 2))
     print("Trained b        ", round(model.b, 2))
 
+    plt.scatter(x_train, y_train, color = 'blue')
+    plt.plot(x_test, y_pred, color = 'red')
+    plt.title('Salary vs Experience')
+    plt.xlabel('Experience (Years)')
+    plt.ylabel('Salary')
+    plt.show()
+
 
 if __name__ == '__main__':
     main()
