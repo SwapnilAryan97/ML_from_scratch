@@ -1,3 +1,5 @@
+"""Simple and Multiple Linear Regression"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,38 +24,33 @@ class linearRegression:
 
         '''gradient descent'''
         for i in range(self.iterations):
-            self.update_weights()
-        return self
+            y_pred = self.predict(self.x)
+            # calculate gradients
+            dw = (1 / self.m) * (2 * np.dot(self.x.T, (y_pred - self.y)))
+            db = (1 / self.m) * (2 * sum(y_pred - self.y))
+            # dw = -(2 * (self.x.T).dot(self.y - y_pred)) / self.m
+            # db = -2 * sum(self.y - y_pred) / self.m
 
-    '''update weights'''
-
-    def update_weights(self):
-        y_pred = self.predict(self.x)
-        # calculate gradients
-        dw = -(2 * (self.x.T).dot(self.y - y_pred)) / self.m
-        db = -2 * sum(self.y - y_pred) / self.m
-
-        # update weights
-        self.w = self.w - (self.learning_rate * dw)
-        self.b = self.b - (self.learning_rate * db)
+            # update weights
+            self.w -= self.learning_rate * dw
+            self.b -= self.learning_rate * db
         return self
 
     '''predict'''
 
     def predict(self, x):
-        return x.dot(self.w) + self.b
+        return np.dot(x, self.w) + self.b
 
     # ''' ************ MAIN ************'''
 
 
 def main():
     df = pd.read_csv('salary_data.csv')
-    # df = dataset.copy()
     x = df.iloc[:, :-1].values
     y = df.iloc[:, -1].values
 
     # splitting data
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     # model training
     model = linearRegression(iterations=1000, learning_rate=0.01)
@@ -61,15 +58,19 @@ def main():
 
     # Prediction
     y_pred = model.predict(x_test)
-    print(y_pred)
 
-    print("Predicted values ", np.round(y_pred[:3], 2))
-    print("Real values      ", y_test[:3])
+    # print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.reshape(len(y_test), 1)), 1))
+    print('Prediction \n', [round(i) for i in y_pred])  # rounding off y_pred for easier read
+    print('Original \n', y_test)
+
+    print("\nReal values      ", y_test[:3])
     print("Trained W        ", round(model.w[0], 2))
     print("Trained b        ", round(model.b, 2))
 
-    plt.scatter(x_train, y_train, color = 'blue')
-    plt.plot(x_test, y_pred, color = 'red')
+    ''' Potting only for Simple Linear Regression '''
+
+    plt.scatter(x_train, y_train, color='blue')
+    plt.plot(x_test, y_pred, color='red')
     plt.title('Salary vs Experience')
     plt.xlabel('Experience (Years)')
     plt.ylabel('Salary')
